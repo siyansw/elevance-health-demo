@@ -96,9 +96,8 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
   }, [isOpen, useCaseId, onComplete]);
 
   const handleClose = () => {
-    if (status !== 'running') {
-      onClose();
-    }
+    // Allow closing modal even during execution - it will continue in background
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -129,10 +128,9 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
               variant="ghost"
               size="sm"
               onClick={handleClose}
-              disabled={status === 'running'}
               icon={<X className="w-4 h-4" />}
             >
-              {status === 'running' ? 'Running...' : 'Close'}
+              {status === 'running' ? 'Minimize' : 'Close'}
             </Button>
           </div>
 

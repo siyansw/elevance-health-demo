@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2, Eye } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { ExecutionModal } from '../modals/ExecutionModal';
 import { ResultsDetail } from './ResultsDetail';
 import type { UseCaseConfig, ExecutionResult } from '../../lib/types';
 import { storage } from '../../lib/storage';
+import { PT_COMMITTEE_DEMO_DATA, PRIOR_AUTH_DEMO_DATA } from '../../lib/demoData';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -42,22 +43,27 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, ExecutionResult>>({});
   const [executingUseCase, setExecutingUseCase] = useState<string | null>(null);
-  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [selectedUseCase, setSelectedUseCase] = useState<string>('pt-committee'); // Show one use case at a time
+  const [showLiveModal, setShowLiveModal] = useState(false);
 
-  // Load previous results on mount
+  // Always load demo data on mount for the demo
   useEffect(() => {
-    const storedResults = storage.getAllResults();
-    const resultsMap: Record<string, ExecutionResult> = {};
-    Object.entries(storedResults).forEach(([id, stored]) => {
-      resultsMap[id] = stored.result;
-    });
+    // Always start with demo data to ensure something is visible
+    const resultsMap: Record<string, ExecutionResult> = {
+      'pt-committee': PT_COMMITTEE_DEMO_DATA,
+      'prior-auth': PRIOR_AUTH_DEMO_DATA,
+    };
+
     setResults(resultsMap);
+    console.log('✅ Demo data loaded:', resultsMap);
   }, []);
 
   const handleExecuteUseCase = async (useCaseId: string) => {
     console.log('🎯 Dashboard: Execute button clicked for:', useCaseId);
+    // Start execution and open modal
     setExecutingUseCase(useCaseId);
-    console.log('📂 Dashboard: State updated, modal should open');
+    setShowLiveModal(true); // Open modal to start execution
+    console.log('📂 Dashboard: Starting execution');
   };
 
   const handleExecutionComplete = useCallback((useCaseId: string, result: ExecutionResult) => {
@@ -71,11 +77,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       [useCaseId]: result,
     }));
 
-    // Don't close modal here - let user click "Done" button
+    // Stop execution state
+    setExecutingUseCase(null);
   }, []);
 
   const handleExecutionClose = () => {
-    setExecutingUseCase(null);
+    setShowLiveModal(false);
+  };
+
+  const handleWatchLive = () => {
+    setShowLiveModal(true);
   };
 
   return (
@@ -112,19 +123,47 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Web Automation using AI Agents
+            Clinical Intelligence Reports
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Accelerate clinical decisions with intelligent automation. Click Run to execute AI agents in real-time.
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
+            Comprehensive formulary and prior authorization analysis powered by AI agents.
+            <span className="font-semibold text-elevance-blue"> All data ready to view below.</span>
           </p>
+
+          {/* Use Case Selector */}
+          <div className="flex justify-center gap-4 mb-8">
+            {useCases.map((useCase) => {
+              const Icon = iconMap[useCase.icon as keyof typeof iconMap];
+              const isSelected = selectedUseCase === useCase.id;
+              return (
+                <button
+                  key={useCase.id}
+                  onClick={() => setSelectedUseCase(useCase.id)}
+                  className={`flex items-center space-x-3 px-6 py-4 rounded-xl transition-all ${
+                    isSelected
+                      ? 'bg-elevance-blue text-white shadow-lg scale-105'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 shadow-md'
+                  }`}
+                >
+                  <Icon className="w-6 h-6" />
+                  <div className="text-left">
+                    <div className="font-bold text-lg">{useCase.title}</div>
+                    <div className={`text-xs ${isSelected ? 'text-blue-100' : 'text-gray-500'}`}>
+                      {useCase.category}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </motion.div>
 
-        {/* Use Case Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {useCases.map((useCase, index) => {
+        {/* Selected Use Case - Full Screen */}
+        <div className="max-w-7xl mx-auto">
+          {useCases.filter(uc => uc.id === selectedUseCase).map((useCase, index) => {
             const Icon = iconMap[useCase.icon as keyof typeof iconMap];
             const isHovered = hoveredCard === useCase.id;
             const result = results[useCase.id];
@@ -169,21 +208,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         <motion.div
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="bg-white/70 backdrop-blur-sm rounded-lg p-4 mb-4"
+                          className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg p-4 mb-4"
                         >
                           <div className="flex items-center mb-2">
-                            <CheckCircle2 className="w-4 h-4 text-green-600 mr-2" />
-                            <span className="text-sm font-semibold text-gray-900">Last Run Results</span>
+                            <CheckCircle2 className="w-5 h-5 text-green-600 mr-2" />
+                            <span className="text-base font-bold text-gray-900">Comprehensive Analysis Ready</span>
                           </div>
-                          <p className="text-xs text-gray-700 mb-3">{result.summary}</p>
+                          <p className="text-sm text-gray-700 mb-3">{result.summary}</p>
                           <div className="grid grid-cols-2 gap-3 text-xs">
-                            <div className="bg-white/60 rounded px-2 py-1.5">
-                              <div className="text-gray-600">Duration</div>
-                              <div className="font-semibold text-elevance-blue">{(result.duration / 1000).toFixed(1)}s</div>
+                            <div className="bg-white/80 rounded px-3 py-2">
+                              <div className="text-gray-600">Data Points</div>
+                              <div className="font-bold text-elevance-blue text-lg">{result.details?.dataPointsAnalyzed?.toLocaleString() || 'N/A'}</div>
                             </div>
-                            <div className="bg-white/60 rounded px-2 py-1.5">
-                              <div className="text-gray-600">Sources</div>
-                              <div className="font-semibold text-elevance-blue">{result.details?.sourcesQueried || 'N/A'}</div>
+                            <div className="bg-white/80 rounded px-3 py-2">
+                              <div className="text-gray-600">Sources Analyzed</div>
+                              <div className="font-bold text-elevance-blue text-lg">{result.details?.sourcesQueried || 'N/A'}</div>
                             </div>
                           </div>
                         </motion.div>
@@ -191,39 +230,37 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-white/50">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center text-gray-600 text-sm">
-                          <Clock className="w-4 h-4 mr-1.5" />
-                          <span>{useCase.estimatedTime}</span>
+                    <div className="pt-4 border-t border-white/50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          {executingUseCase === useCase.id && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleWatchLive}
+                              icon={<Eye className="w-4 h-4" />}
+                            >
+                              Watch Live
+                            </Button>
+                          )}
                         </div>
-                        {hasRun && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setExpandedCard(expandedCard === useCase.id ? null : useCase.id)}
-                            icon={expandedCard === useCase.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                          >
-                            {expandedCard === useCase.id ? 'Hide Details' : 'View Details'}
-                          </Button>
-                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleExecuteUseCase(useCase.id)}
+                          icon={<Play className="w-3 h-3" />}
+                          disabled={executingUseCase === useCase.id}
+                          className="text-xs"
+                        >
+                          {executingUseCase === useCase.id ? 'Refreshing...' : 'Refresh Data'}
+                        </Button>
                       </div>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleExecuteUseCase(useCase.id)}
-                        icon={<Play className="w-4 h-4" />}
-                      >
-                        {hasRun ? 'Run Again' : 'Run'}
-                      </Button>
                     </div>
 
-                    {/* Detailed Results */}
-                    <AnimatePresence>
-                      {hasRun && expandedCard === useCase.id && (
-                        <ResultsDetail result={result} useCaseId={useCase.id} />
-                      )}
-                    </AnimatePresence>
+                    {/* Detailed Results - Always Visible */}
+                    {hasRun && (
+                      <ResultsDetail result={result} useCaseId={useCase.id} />
+                    )}
                   </div>
                 </Card>
               </motion.div>
@@ -270,8 +307,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         <p>Powered by TinyFish AI Agent Orchestration</p>
       </footer>
 
-      {/* Execution Modal */}
-      {executingUseCase && (
+      {/* Execution Modal - Only shown when "Watch Live" is clicked */}
+      {executingUseCase && showLiveModal && (
         <ExecutionModal
           isOpen={true}
           onClose={handleExecutionClose}
