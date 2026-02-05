@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, ShieldCheck, Clock, Sparkles, LogOut } from 'lucide-react';
+import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2 } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
-import type { UseCaseConfig } from '../../lib/types';
+import { ExecutionModal } from '../modals/ExecutionModal';
+import type { UseCaseConfig, ExecutionResult } from '../../lib/types';
+import { storage } from '../../lib/storage';
 
 interface DashboardProps {
-  onSelectUseCase: (useCaseId: string) => void;
   onLogout: () => void;
 }
 
@@ -36,8 +37,41 @@ const iconMap = {
   ShieldCheck: ShieldCheck,
 };
 
-export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [results, setResults] = useState<Record<string, ExecutionResult>>({});
+  const [executingUseCase, setExecutingUseCase] = useState<string | null>(null);
+
+  // Load previous results on mount
+  useEffect(() => {
+    const storedResults = storage.getAllResults();
+    const resultsMap: Record<string, ExecutionResult> = {};
+    Object.entries(storedResults).forEach(([id, stored]) => {
+      resultsMap[id] = stored.result;
+    });
+    setResults(resultsMap);
+  }, []);
+
+  const handleExecuteUseCase = async (useCaseId: string) => {
+    setExecutingUseCase(useCaseId);
+  };
+
+  const handleExecutionComplete = (useCaseId: string, result: ExecutionResult) => {
+    // Save result to storage
+    storage.saveResult(useCaseId, result);
+
+    // Update local state
+    setResults(prev => ({
+      ...prev,
+      [useCaseId]: result,
+    }));
+
+    setExecutingUseCase(null);
+  };
+
+  const handleExecutionClose = () => {
+    setExecutingUseCase(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-cyan-50/30">
@@ -76,10 +110,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            AI-Powered Healthcare Automation
+            Web Automation using AI Agents
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Accelerate clinical decisions with intelligent automation. Select a use case to see TinyFish AI in action.
+            Accelerate clinical decisions with intelligent automation. Click Run to execute AI agents in real-time.
           </p>
         </motion.div>
 
@@ -88,6 +122,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
           {useCases.map((useCase, index) => {
             const Icon = iconMap[useCase.icon as keyof typeof iconMap];
             const isHovered = hoveredCard === useCase.id;
+            const result = results[useCase.id];
+            const hasRun = !!result;
 
             return (
               <motion.div
@@ -98,7 +134,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
                 onHoverStart={() => setHoveredCard(useCase.id)}
                 onHoverEnd={() => setHoveredCard(null)}
               >
-                <Card hover onClick={() => onSelectUseCase(useCase.id)} className="h-full">
+                <Card hover={false} className="h-full">
                   <div className={`p-8 bg-gradient-to-br ${useCase.gradient} h-full flex flex-col`}>
                     {/* Icon & Category */}
                     <div className="flex items-start justify-between mb-4">
@@ -122,6 +158,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
                       <p className="text-gray-700 text-sm leading-relaxed mb-4">
                         {useCase.description}
                       </p>
+
+                      {/* Results Display */}
+                      {hasRun && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-white/70 backdrop-blur-sm rounded-lg p-4 mb-4"
+                        >
+                          <div className="flex items-center mb-2">
+                            <CheckCircle2 className="w-4 h-4 text-green-600 mr-2" />
+                            <span className="text-sm font-semibold text-gray-900">Last Run Results</span>
+                          </div>
+                          <p className="text-xs text-gray-700 mb-3">{result.summary}</p>
+                          <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="bg-white/60 rounded px-2 py-1.5">
+                              <div className="text-gray-600">Duration</div>
+                              <div className="font-semibold text-elevance-blue">{(result.duration / 1000).toFixed(1)}s</div>
+                            </div>
+                            <div className="bg-white/60 rounded px-2 py-1.5">
+                              <div className="text-gray-600">Sources</div>
+                              <div className="font-semibold text-elevance-blue">{result.details?.sourcesQueried || 'N/A'}</div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
                     </div>
 
                     {/* Footer */}
@@ -133,12 +194,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
                       <Button
                         variant="primary"
                         size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectUseCase(useCase.id);
-                        }}
+                        onClick={() => handleExecuteUseCase(useCase.id)}
+                        icon={<Play className="w-4 h-4" />}
                       >
-                        Launch Demo
+                        {hasRun ? 'Run Again' : 'Run'}
                       </Button>
                     </div>
                   </div>
@@ -186,6 +245,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectUseCase, onLogout 
       <footer className="py-8 text-center text-sm text-gray-500">
         <p>Powered by TinyFish AI Agent Orchestration</p>
       </footer>
+
+      {/* Execution Modal */}
+      {executingUseCase && (
+        <ExecutionModal
+          isOpen={true}
+          onClose={handleExecutionClose}
+          useCaseId={executingUseCase}
+          useCaseTitle={useCases.find(uc => uc.id === executingUseCase)?.title || ''}
+          onComplete={(result) => handleExecutionComplete(executingUseCase, result)}
+        />
+      )}
     </div>
   );
 };

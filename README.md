@@ -1,6 +1,6 @@
 # Elevance Health - Clinical Intelligence Platform
 
-A modern, elegant demo application showcasing AI-powered automation for healthcare workflows using TinyFish AI agent orchestration.
+A modern, elegant demo application showcasing web automation using AI agents for healthcare workflows using TinyFish AI agent orchestration.
 
 ## 🎯 Overview
 
@@ -12,7 +12,7 @@ This platform demonstrates two key healthcare use cases:
 ## ✨ Features
 
 - 🎨 Modern, sleek design with Elevance Health branding
-- 🤖 AI-powered automation with real-time execution streaming
+- 🤖 Web automation using AI agents with real-time execution streaming
 - 📊 Evidence-based insights from trusted medical sources
 - ⚡ Lightning-fast execution (under 60 seconds)
 - 🔒 Password-protected access

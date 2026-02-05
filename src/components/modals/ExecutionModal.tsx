@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, Loader2, Terminal, TrendingUp } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, Loader2, Terminal } from 'lucide-react';
 import { Button } from '../common/Button';
-import type { AgentLog } from '../../lib/types';
+import type { AgentLog, ExecutionResult } from '../../lib/types';
+import { minoClient } from '../../lib/api';
 
 interface ExecutionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  useCaseId: string;
   useCaseTitle: string;
-  mode: 'demo' | 'live';
+  onComplete: (result: ExecutionResult) => void;
 }
 
 export const ExecutionModal: React.FC<ExecutionModalProps> = ({
   isOpen,
   onClose,
+  useCaseId,
   useCaseTitle,
-  mode,
+  onComplete,
 }) => {
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<'running' | 'completed' | 'error'>('running');
   const [duration, setDuration] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -28,48 +32,63 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
       setProgress(0);
       setStatus('running');
       setDuration(0);
+      setError(null);
       return;
     }
 
-    // Simulate execution (replace with real API call)
+    let isCancelled = false;
     const startTime = Date.now();
+
+    // Update duration timer
     const durationTimer = setInterval(() => {
-      setDuration(Math.floor((Date.now() - startTime) / 1000));
+      if (!isCancelled) {
+        setDuration(Math.floor((Date.now() - startTime) / 1000));
+      }
     }, 1000);
 
-    // Simulated logs for demo
-    const demoLogs: AgentLog[] = [
-      { timestamp: '0.5s', level: 'info', message: 'Initializing TinyFish agent orchestration...' },
-      { timestamp: '1.2s', level: 'info', message: 'Connecting to data sources...' },
-      { timestamp: '2.1s', level: 'success', message: 'Connected to FDA Drugs@FDA database' },
-      { timestamp: '3.5s', level: 'info', message: 'Querying clinical trial data...' },
-      { timestamp: '5.8s', level: 'success', message: 'Retrieved 247 clinical trials from ClinicalTrials.gov' },
-      { timestamp: '8.2s', level: 'info', message: 'Searching PubMed for published research...' },
-      { timestamp: '11.4s', level: 'success', message: 'Found 1,832 relevant publications' },
-      { timestamp: '14.6s', level: 'info', message: 'Analyzing clinical guidelines...' },
-      { timestamp: '18.3s', level: 'success', message: 'Compiled recommendations from ADA, ACC, AHA' },
-      { timestamp: '21.7s', level: 'info', message: 'Synthesizing evidence and generating report...' },
-      { timestamp: '25.1s', level: 'success', message: 'Analysis complete. Processing results...' },
-      { timestamp: '28.5s', level: 'success', message: 'Report generated successfully' },
-    ];
+    // Execute the use case
+    const execute = async () => {
+      try {
+        const result = await minoClient.executeUseCase(
+          useCaseId,
+          (log) => {
+            if (!isCancelled) {
+              setLogs((prev) => [...prev, log]);
+            }
+          },
+          (progressValue) => {
+            if (!isCancelled) {
+              setProgress(progressValue);
+            }
+          }
+        );
 
-    let currentLog = 0;
-    const logInterval = setInterval(() => {
-      if (currentLog < demoLogs.length) {
-        setLogs((prev) => [...prev, demoLogs[currentLog]]);
-        setProgress(((currentLog + 1) / demoLogs.length) * 100);
-        currentLog++;
-      } else {
-        clearInterval(logInterval);
-        setStatus('completed');
+        if (!isCancelled) {
+          setStatus('completed');
+          setProgress(100);
+          onComplete(result);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setStatus('error');
+          setError(err instanceof Error ? err.message : 'Execution failed');
+        }
       }
-    }, 2500);
+    };
+
+    execute();
 
     return () => {
-      clearInterval(logInterval);
+      isCancelled = true;
       clearInterval(durationTimer);
     };
-  }, [isOpen]);
+  }, [isOpen, useCaseId, onComplete]);
+
+  const handleClose = () => {
+    if (status !== 'running') {
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -91,14 +110,14 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{useCaseTitle}</h2>
                 <p className="text-sm text-gray-600">
-                  {mode === 'demo' ? 'Demo Mode' : 'Live Execution'} - {duration}s elapsed
+                  {status === 'running' ? `Running - ${duration}s elapsed` : status === 'completed' ? `Completed in ${duration}s` : 'Error'}
                 </p>
               </div>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={status === 'running'}
               icon={<X className="w-4 h-4" />}
             >
@@ -124,46 +143,70 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
 
           {/* Logs */}
           <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-            <div className="space-y-2">
-              <AnimatePresence>
-                {logs.map((log, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50 border border-gray-200"
-                  >
-                    {log.level === 'success' && (
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    )}
-                    {log.level === 'error' && (
-                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                    )}
-                    {log.level === 'info' && (
-                      <Loader2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />
-                    )}
-                    {log.level === 'warning' && (
-                      <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="text-xs font-mono text-gray-500">{log.timestamp}</span>
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded ${
-                          log.level === 'success' ? 'bg-green-100 text-green-700' :
-                          log.level === 'error' ? 'bg-red-100 text-red-700' :
-                          log.level === 'warning' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-blue-100 text-blue-700'
-                        }`}>
-                          {log.level.toUpperCase()}
-                        </span>
+            {error ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Execution Failed</h3>
+                  <p className="text-sm text-gray-600">{error}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <AnimatePresence>
+                  {logs.map((log, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50 border border-gray-200"
+                    >
+                      {log.level === 'success' && (
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      {log.level === 'error' && (
+                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      {log.level === 'info' && (
+                        <Loader2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />
+                      )}
+                      {log.level === 'warning' && (
+                        <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <span className="text-xs font-mono text-gray-500">{log.timestamp}</span>
+                          <span
+                            className={`text-xs font-medium px-2 py-0.5 rounded ${
+                              log.level === 'success'
+                                ? 'bg-green-100 text-green-700'
+                                : log.level === 'error'
+                                ? 'bg-red-100 text-red-700'
+                                : log.level === 'warning'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-blue-100 text-blue-700'
+                            }`}
+                          >
+                            {log.level.toUpperCase()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-700">{log.message}</p>
                       </div>
-                      <p className="text-sm text-gray-700">{log.message}</p>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {logs.length === 0 && status === 'running' && (
+                  <div className="flex items-center justify-center h-32">
+                    <div className="text-center">
+                      <Loader2 className="w-8 h-8 text-elevance-blue animate-spin mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">Initializing AI agents...</p>
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -183,14 +226,32 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
                     <p className="text-sm text-gray-600">Report generated in {duration} seconds</p>
                   </div>
                 </div>
+                <Button variant="primary" size="sm" onClick={handleClose}>
+                  Done
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {status === 'error' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-6 border-t border-gray-200 bg-red-50"
+            >
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <Button variant="outline" size="sm" icon={<TrendingUp className="w-4 h-4" />}>
-                    View Results
-                  </Button>
-                  <Button variant="primary" size="sm" onClick={onClose}>
-                    Done
-                  </Button>
+                  <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+                    <AlertCircle className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Execution Failed</h3>
+                    <p className="text-sm text-gray-600">Please try again or contact support</p>
+                  </div>
                 </div>
+                <Button variant="primary" size="sm" onClick={handleClose}>
+                  Close
+                </Button>
               </div>
             </motion.div>
           )}
