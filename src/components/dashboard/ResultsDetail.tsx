@@ -797,7 +797,7 @@ const FormularyTab: React.FC<{ details: any }> = ({ details }) => {
                 {Object.entries(formulary.medicareCoverage.tierDistribution).map(([tier, percent]) => (
                   <div key={tier} className="bg-white rounded p-2 text-center">
                     <div className="text-xs text-gray-600 capitalize">{tier.replace('tier', 'Tier ')}</div>
-                    <div className="text-lg font-bold text-gray-900">{percent}%</div>
+                    <div className="text-lg font-bold text-gray-900">{percent as number}%</div>
                   </div>
                 ))}
               </div>

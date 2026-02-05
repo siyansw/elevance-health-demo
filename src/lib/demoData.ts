@@ -239,7 +239,7 @@ export const PT_COMMITTEE_DEMO_DATA: ExecutionResult = {
       },
     },
     comparatorDrugs: [
-      { name: 'Tirzepatide (Mounjaro)', efficacy: 72.4, cost: 13500, hba1c: -2.1, weightLoss: -12.4, maceReduction: null },
+      { name: 'Tirzepatide (Mounjaro)', efficacy: 72.4, cost: 13500, hba1c: -2.1, weightLoss: -12.4, maceReduction: undefined },
       { name: 'Dulaglutide (Trulicity)', efficacy: 61.2, cost: 11800, hba1c: -1.2, weightLoss: -2.9, maceReduction: 12 },
       { name: 'Liraglutide (Victoza)', efficacy: 58.9, cost: 10200, hba1c: -1.1, weightLoss: -2.3, maceReduction: 13 },
     ],
