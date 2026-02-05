@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '../common/Card';
 import { Button } from '../common/Button';
 import { ExecutionModal } from '../modals/ExecutionModal';
+import { ResultsDetail } from './ResultsDetail';
 import type { UseCaseConfig, ExecutionResult } from '../../lib/types';
 import { storage } from '../../lib/storage';
 
@@ -41,6 +42,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, ExecutionResult>>({});
   const [executingUseCase, setExecutingUseCase] = useState<string | null>(null);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   // Load previous results on mount
   useEffect(() => {
@@ -187,9 +189,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
                     {/* Footer */}
                     <div className="flex items-center justify-between pt-4 border-t border-white/50">
-                      <div className="flex items-center text-gray-600 text-sm">
-                        <Clock className="w-4 h-4 mr-1.5" />
-                        <span>{useCase.estimatedTime}</span>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center text-gray-600 text-sm">
+                          <Clock className="w-4 h-4 mr-1.5" />
+                          <span>{useCase.estimatedTime}</span>
+                        </div>
+                        {hasRun && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setExpandedCard(expandedCard === useCase.id ? null : useCase.id)}
+                            icon={expandedCard === useCase.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          >
+                            {expandedCard === useCase.id ? 'Hide Details' : 'View Details'}
+                          </Button>
+                        )}
                       </div>
                       <Button
                         variant="primary"
@@ -200,6 +214,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         {hasRun ? 'Run Again' : 'Run'}
                       </Button>
                     </div>
+
+                    {/* Detailed Results */}
+                    <AnimatePresence>
+                      {hasRun && expandedCard === useCase.id && (
+                        <ResultsDetail result={result} useCaseId={useCase.id} />
+                      )}
+                    </AnimatePresence>
                   </div>
                 </Card>
               </motion.div>
