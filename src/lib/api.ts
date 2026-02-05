@@ -31,14 +31,28 @@ export class MinoAPIClient {
     onLog?: (log: AgentLog) => void,
     onProgress?: (progress: number) => void
   ): Promise<ExecutionResult> {
-    // Check if API key is configured
-    if (!this.apiKey || this.apiKey === '') {
-      console.log('No API key configured, using simulated execution');
-      return this.simulateExecution(useCaseId, onLog, onProgress);
-    }
-
     const startTime = Date.now();
     const logs: AgentLog[] = [];
+
+    // Warn if no API key but continue to try
+    if (!this.apiKey || this.apiKey === '') {
+      console.warn('⚠️ No API key configured. Set VITE_MINO_API_KEY in .env file.');
+      console.warn('Get your API key from: https://app.mino.ai/signup');
+      console.warn('Attempting API call anyway - will use demo data if it fails...');
+
+      onLog?.({
+        timestamp: '0.0s',
+        level: 'warning',
+        message: 'No API key configured - using demo mode',
+      });
+    } else {
+      console.log('✅ API key found, making real TinyFish API calls...');
+      onLog?.({
+        timestamp: '0.0s',
+        level: 'info',
+        message: 'Connecting to TinyFish Mino API...',
+      });
+    }
 
     try {
       // Configure automation request based on use case
@@ -98,7 +112,15 @@ export class MinoAPIClient {
       return aggregatedResult;
 
     } catch (error) {
-      console.error('API execution failed:', error);
+      console.error('❌ API execution failed:', error);
+      console.log('🔄 Falling back to simulated demo data...');
+
+      onLog?.({
+        timestamp: `${((Date.now() - startTime) / 1000).toFixed(1)}s`,
+        level: 'warning',
+        message: 'API call failed - using demo data',
+      });
+
       // Fallback to simulated execution
       return this.simulateExecution(useCaseId, onLog, onProgress);
     }
@@ -109,17 +131,28 @@ export class MinoAPIClient {
     onEvent?: (event: MinoEvent) => void,
     onProgress?: (progress: number) => void
   ): Promise<any> {
+    console.log('🚀 Making TinyFish API request:', {
+      url: request.url,
+      goal: request.goal.substring(0, 100) + '...',
+      endpoint: this.apiUrl,
+      hasApiKey: !!this.apiKey,
+    });
+
     const response = await fetch(this.apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': this.apiKey,
+        'X-API-Key': this.apiKey || '',
       },
       body: JSON.stringify(request),
     });
 
+    console.log('📡 API Response status:', response.status, response.statusText);
+
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ API request failed:', response.status, errorText);
+      throw new Error(`API request failed: ${response.statusText} - ${errorText}`);
     }
 
     const reader = response.body?.getReader();
@@ -144,9 +177,11 @@ export class MinoAPIClient {
         if (line.startsWith('data: ')) {
           try {
             const data = JSON.parse(line.slice(6));
+            console.log('📨 SSE Event received:', data.type, data.status || '');
             onEvent?.(data);
 
             if (data.type === 'COMPLETE' && data.resultJson) {
+              console.log('✅ Got result data:', data.resultJson);
               resultData = data.resultJson;
             }
 
@@ -154,7 +189,7 @@ export class MinoAPIClient {
               onProgress?.(data.progress);
             }
           } catch (e) {
-            console.error('Error parsing SSE data:', e);
+            console.error('Error parsing SSE data:', e, line);
           }
         }
       }

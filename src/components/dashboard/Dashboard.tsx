@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, ShieldCheck, Clock, Sparkles, LogOut, Play, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '../common/Card';
@@ -55,10 +55,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   }, []);
 
   const handleExecuteUseCase = async (useCaseId: string) => {
+    console.log('🎯 Dashboard: Execute button clicked for:', useCaseId);
     setExecutingUseCase(useCaseId);
+    console.log('📂 Dashboard: State updated, modal should open');
   };
 
-  const handleExecutionComplete = (useCaseId: string, result: ExecutionResult) => {
+  const handleExecutionComplete = useCallback((useCaseId: string, result: ExecutionResult) => {
+    console.log('✅ Execution completed callback:', useCaseId);
     // Save result to storage
     storage.saveResult(useCaseId, result);
 
@@ -68,8 +71,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       [useCaseId]: result,
     }));
 
-    setExecutingUseCase(null);
-  };
+    // Don't close modal here - let user click "Done" button
+  }, []);
 
   const handleExecutionClose = () => {
     setExecutingUseCase(null);
@@ -274,7 +277,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           onClose={handleExecutionClose}
           useCaseId={executingUseCase}
           useCaseTitle={useCases.find(uc => uc.id === executingUseCase)?.title || ''}
-          onComplete={(result) => handleExecutionComplete(executingUseCase, result)}
+          onComplete={handleExecutionComplete}
         />
       )}
     </div>

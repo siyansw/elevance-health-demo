@@ -10,7 +10,7 @@ interface ExecutionModalProps {
   onClose: () => void;
   useCaseId: string;
   useCaseTitle: string;
-  onComplete: (result: ExecutionResult) => void;
+  onComplete: (useCaseId: string, result: ExecutionResult) => void;
 }
 
 export const ExecutionModal: React.FC<ExecutionModalProps> = ({
@@ -27,7 +27,10 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('🔵 ExecutionModal useEffect triggered:', { isOpen, useCaseId });
+
     if (!isOpen) {
+      console.log('❌ Modal not open, resetting state');
       setLogs([]);
       setProgress(0);
       setStatus('running');
@@ -36,6 +39,7 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
       return;
     }
 
+    console.log('✅ Modal is open, starting execution for:', useCaseId);
     let isCancelled = false;
     const startTime = Date.now();
 
@@ -48,27 +52,33 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
 
     // Execute the use case
     const execute = async () => {
+      console.log('🚀 Starting minoClient.executeUseCase for:', useCaseId);
       try {
         const result = await minoClient.executeUseCase(
           useCaseId,
           (log) => {
+            console.log('📝 Log received:', log);
             if (!isCancelled) {
               setLogs((prev) => [...prev, log]);
             }
           },
           (progressValue) => {
+            console.log('📊 Progress:', progressValue);
             if (!isCancelled) {
               setProgress(progressValue);
             }
           }
         );
 
+        console.log('✅ Execution completed, result:', result);
+
         if (!isCancelled) {
           setStatus('completed');
           setProgress(100);
-          onComplete(result);
+          onComplete(useCaseId, result);
         }
       } catch (err) {
+        console.error('❌ Execution error:', err);
         if (!isCancelled) {
           setStatus('error');
           setError(err instanceof Error ? err.message : 'Execution failed');
@@ -76,6 +86,7 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
       }
     };
 
+    console.log('🎬 Calling execute()...');
     execute();
 
     return () => {
