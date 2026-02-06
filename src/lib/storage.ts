@@ -1,6 +1,6 @@
 import type { ExecutionResult } from './types';
 
-const STORAGE_KEY = 'elevance-execution-results';
+const STORAGE_KEY = 'clinical-intelligence-results';
 
 export interface StoredResults {
   [useCaseId: string]: {

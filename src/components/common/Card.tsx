@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({
   gradient,
 }) => {
   const baseStyles = 'bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden';
-  const hoverStyles = hover ? 'cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-elevance-lightblue/50' : '';
+  const hoverStyles = hover ? 'cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-brand-lightblue/50' : '';
   const gradientStyles = gradient ? `bg-gradient-to-br ${gradient}` : '';
 
   return (

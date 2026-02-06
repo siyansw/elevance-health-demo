@@ -114,7 +114,7 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-elevance-blue to-elevance-lightblue rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-brand-blue to-brand-lightblue rounded-lg flex items-center justify-center">
                 <Terminal className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -138,14 +138,14 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
           <div className="px-6 pt-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-700">Execution Progress</span>
-              <span className="text-sm font-medium text-elevance-blue">{Math.round(progress)}%</span>
+              <span className="text-sm font-medium text-brand-blue">{Math.round(progress)}%</span>
             </div>
             <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5 }}
-                className="h-full bg-gradient-to-r from-elevance-blue to-elevance-lightblue"
+                className="h-full bg-gradient-to-r from-brand-blue to-brand-lightblue"
               />
             </div>
           </div>
@@ -209,7 +209,7 @@ export const ExecutionModal: React.FC<ExecutionModalProps> = ({
                 {logs.length === 0 && status === 'running' && (
                   <div className="flex items-center justify-center h-32">
                     <div className="text-center">
-                      <Loader2 className="w-8 h-8 text-elevance-blue animate-spin mx-auto mb-2" />
+                      <Loader2 className="w-8 h-8 text-brand-blue animate-spin mx-auto mb-2" />
                       <p className="text-sm text-gray-600">Initializing AI agents...</p>
                     </div>
                   </div>

@@ -1,25 +1,25 @@
-# Elevance Health - Clinical Intelligence Platform
+# Clinical Intelligence Platform
 
 A modern, elegant demo application showcasing web automation using AI agents for healthcare workflows using TinyFish AI agent orchestration.
 
-## 🎯 Overview
+## Overview
 
 This platform demonstrates two key healthcare use cases:
 
 1. **P&T Committee Intelligence** - Automate evidence gathering for formulary decisions
 2. **Prior Authorization Intelligence** - Streamline PA criteria research and clinical evidence compilation
 
-## ✨ Features
+## Features
 
-- 🎨 Modern, sleek design with Elevance Health branding
-- 🤖 Web automation using AI agents with real-time execution streaming
-- 📊 Evidence-based insights from trusted medical sources
-- ⚡ Lightning-fast execution (under 60 seconds)
-- 🔒 Password-protected access
-- 📱 Fully responsive design
-- 🎭 Demo and Live execution modes
+- Modern, sleek design with customizable branding
+- Web automation using AI agents with real-time execution streaming
+- Evidence-based insights from trusted medical sources
+- Lightning-fast execution (under 60 seconds)
+- Password-protected access
+- Fully responsive design
+- Demo and Live execution modes
 
-## 🛠 Technology Stack
+## Technology Stack
 
 - **Frontend:** React 18 + TypeScript
 - **Build Tool:** Vite
@@ -29,7 +29,7 @@ This platform demonstrates two key healthcare use cases:
 - **Icons:** Lucide React
 - **AI Orchestration:** TinyFish Mino API
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -41,7 +41,7 @@ This platform demonstrates two key healthcare use cases:
 ```bash
 # Clone the repository
 git clone <your-repo-url>
-cd elevance-health-demo
+cd clinical-intelligence-demo
 
 # Install dependencies
 npm install
@@ -71,7 +71,7 @@ npm run build
 npm run preview
 ```
 
-## 🌐 Deployment to Vercel
+## Deployment to Vercel
 
 ### Option 1: Vercel CLI
 
@@ -105,13 +105,13 @@ In your Vercel project settings, add these environment variables:
 ```
 VITE_MINO_API_KEY=your_mino_api_key
 VITE_MINO_API_URL=https://api.tinyfish.ai
-VITE_DEMO_PASSWORD=elevance2024
+VITE_DEMO_PASSWORD=demo2024
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-elevance-health-demo/
+clinical-intelligence-demo/
 ├── src/
 │   ├── components/
 │   │   ├── auth/           # Login component
@@ -132,9 +132,11 @@ elevance-health-demo/
 └── package.json
 ```
 
-## 🎨 Design System
+## Design System
 
 ### Brand Colors
+
+The default brand colors can be customized in `tailwind.config.js`:
 
 - **Primary Blue:** `#1A3673` - Main brand color
 - **Light Blue:** `#44b8f3` - Accent color
@@ -146,11 +148,11 @@ elevance-health-demo/
 - **Font Family:** Inter (Google Fonts)
 - **Weights:** 300, 400, 500, 600, 700
 
-## 🔐 Authentication
+## Authentication
 
 The demo uses simple password-based authentication. In demo mode, any password will work. For production, integrate with your organization's authentication system.
 
-## 📊 Use Cases
+## Use Cases
 
 ### 1. P&T Committee Intelligence
 
@@ -176,7 +178,7 @@ The demo uses simple password-based authentication. In demo mode, any password w
 
 **Example:** Dupixent (Dupilumab) for Atopic Dermatitis
 
-## 🔄 Execution Modes
+## Execution Modes
 
 ### Demo Mode
 - Uses pre-recorded execution data
@@ -188,7 +190,15 @@ The demo uses simple password-based authentication. In demo mode, any password w
 - Shows actual agent execution
 - Requires TinyFish API key
 
-## 🤝 Contributing
+## Customization
+
+To customize for your organization:
+
+1. Update brand colors in `tailwind.config.js`
+2. Replace logo/branding text in `Login.tsx` and `Dashboard.tsx`
+3. Modify use case configurations as needed
+
+## Contributing
 
 This is a demo application. For production use, consider:
 
@@ -198,11 +208,7 @@ This is a demo application. For production use, consider:
 - Implementing rate limiting
 - Adding comprehensive testing
 
-## 📝 License
-
-This project is proprietary to Elevance Health.
-
-## 🙋 Support
+## Support
 
 For questions or issues, contact your TinyFish account representative.
 

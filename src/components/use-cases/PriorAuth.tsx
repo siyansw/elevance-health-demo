@@ -29,7 +29,7 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
               Back
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-elevance-blue">Prior Authorization Intelligence</h1>
+              <h1 className="text-xl font-bold text-brand-blue">Prior Authorization Intelligence</h1>
               <p className="text-sm text-gray-600">Automated Clinical Criteria Research</p>
             </div>
           </div>
@@ -48,7 +48,7 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
             <div className="p-8 bg-gradient-to-br from-cyan-50 to-sky-50">
               <div className="flex items-start space-x-4">
                 <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                  <FileCheck className="w-8 h-8 text-elevance-blue" />
+                  <FileCheck className="w-8 h-8 text-brand-blue" />
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">About This Use Case</h2>
@@ -91,8 +91,8 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
                 >
                   <Card>
                     <div className="p-4 flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-elevance-lightblue/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-elevance-blue" />
+                      <div className="w-10 h-10 bg-brand-lightblue/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-brand-blue" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 text-sm">{source.name}</h4>
@@ -118,15 +118,15 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <div className="text-elevance-blue font-semibold mb-2">Reduce Admin Burden</div>
+                  <div className="text-brand-blue font-semibold mb-2">Reduce Admin Burden</div>
                   <p className="text-sm text-gray-600">Automate manual policy research, replacing fax-based processes</p>
                 </div>
                 <div>
-                  <div className="text-elevance-blue font-semibold mb-2">Evidence-Based Decisions</div>
+                  <div className="text-brand-blue font-semibold mb-2">Evidence-Based Decisions</div>
                   <p className="text-sm text-gray-600">Comprehensive clinical criteria from trusted sources</p>
                 </div>
                 <div>
-                  <div className="text-elevance-blue font-semibold mb-2">Faster Approvals</div>
+                  <div className="text-brand-blue font-semibold mb-2">Faster Approvals</div>
                   <p className="text-sm text-gray-600">Accelerate authorization timelines from hours to seconds</p>
                 </div>
               </div>
@@ -146,12 +146,12 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
             <Card
               hover
               onClick={() => setSelectedMode('demo')}
-              className={`cursor-pointer ${selectedMode === 'demo' ? 'ring-2 ring-elevance-blue' : ''}`}
+              className={`cursor-pointer ${selectedMode === 'demo' ? 'ring-2 ring-brand-blue' : ''}`}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-semibold text-gray-900">Demo Mode</h4>
-                  <div className={`w-5 h-5 rounded-full border-2 ${selectedMode === 'demo' ? 'border-elevance-blue bg-elevance-blue' : 'border-gray-300'} flex items-center justify-center`}>
+                  <div className={`w-5 h-5 rounded-full border-2 ${selectedMode === 'demo' ? 'border-brand-blue bg-brand-blue' : 'border-gray-300'} flex items-center justify-center`}>
                     {selectedMode === 'demo' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                   </div>
                 </div>
@@ -164,12 +164,12 @@ export const PriorAuth: React.FC<PriorAuthProps> = ({ onBack, onExecute }) => {
             <Card
               hover
               onClick={() => setSelectedMode('live')}
-              className={`cursor-pointer ${selectedMode === 'live' ? 'ring-2 ring-elevance-blue' : ''}`}
+              className={`cursor-pointer ${selectedMode === 'live' ? 'ring-2 ring-brand-blue' : ''}`}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-semibold text-gray-900">Live Mode</h4>
-                  <div className={`w-5 h-5 rounded-full border-2 ${selectedMode === 'live' ? 'border-elevance-blue bg-elevance-blue' : 'border-gray-300'} flex items-center justify-center`}>
+                  <div className={`w-5 h-5 rounded-full border-2 ${selectedMode === 'live' ? 'border-brand-blue bg-brand-blue' : 'border-gray-300'} flex items-center justify-center`}>
                     {selectedMode === 'live' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                   </div>
                 </div>

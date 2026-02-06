@@ -66,7 +66,7 @@ export const ResultsDetail: React.FC<ResultsDetailProps> = ({ result, useCaseId 
                 {details.drugProfile.brandNames?.map((brand, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-elevance-blue text-white rounded-full text-sm font-medium"
+                    className="px-3 py-1 bg-brand-blue text-white rounded-full text-sm font-medium"
                   >
                     {brand}
                   </span>
@@ -98,14 +98,14 @@ export const ResultsDetail: React.FC<ResultsDetailProps> = ({ result, useCaseId 
               <div className="grid grid-cols-3 gap-4 ml-8">
                 <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 text-center">
                   <div className="text-xs text-gray-600 mb-1">HbA1c Reduction</div>
-                  <div className="text-2xl font-bold text-elevance-blue">-{details.drugProfile.hba1cReduction}%</div>
+                  <div className="text-2xl font-bold text-brand-blue">-{details.drugProfile.hba1cReduction}%</div>
                   {details.drugProfile.hba1cRange && (
                     <div className="text-xs text-gray-500">{details.drugProfile.hba1cRange}</div>
                   )}
                 </div>
                 <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 text-center">
                   <div className="text-xs text-gray-600 mb-1">Weight Loss</div>
-                  <div className="text-2xl font-bold text-elevance-blue">-{details.drugProfile.weightLoss} kg</div>
+                  <div className="text-2xl font-bold text-brand-blue">-{details.drugProfile.weightLoss} kg</div>
                   {details.drugProfile.weightLossRange && (
                     <div className="text-xs text-gray-500">{details.drugProfile.weightLossRange}</div>
                   )}
@@ -197,7 +197,7 @@ export const ResultsDetail: React.FC<ResultsDetailProps> = ({ result, useCaseId 
         <Card>
           <div className="p-6 border-l-4 border-blue-500">
             <div className="flex items-center mb-4">
-              <TrendingUp className="w-6 h-6 text-elevance-blue mr-2" />
+              <TrendingUp className="w-6 h-6 text-brand-blue mr-2" />
               <h2 className="text-2xl font-bold text-gray-900">Clinical Efficacy</h2>
             </div>
             <EfficacyTab details={details} isPTCommittee={isPTCommittee} />
@@ -284,7 +284,7 @@ const EfficacyTab: React.FC<{ details: any; isPTCommittee: boolean }> = ({ detai
           <>
             <div className="bg-blue-50 rounded-lg p-4">
               <div className="text-sm text-gray-600 mb-1">HbA1c Reduction</div>
-              <div className="text-2xl font-bold text-elevance-blue">
+              <div className="text-2xl font-bold text-brand-blue">
                 -{details.drugProfile?.hba1cReduction}%
               </div>
               {details.drugProfile?.hba1cRange && (
@@ -307,7 +307,7 @@ const EfficacyTab: React.FC<{ details: any; isPTCommittee: boolean }> = ({ detai
           <>
             <div className="bg-blue-50 rounded-lg p-4">
               <div className="text-sm text-gray-600 mb-1">EASI-75 Response</div>
-              <div className="text-2xl font-bold text-elevance-blue">
+              <div className="text-2xl font-bold text-brand-blue">
                 {details.drugProfile?.easiImprovement}%
               </div>
               <div className="text-xs text-gray-500 mt-1">≥75% improvement</div>
@@ -390,7 +390,7 @@ const EfficacyTab: React.FC<{ details: any; isPTCommittee: boolean }> = ({ detai
                   href={trial.publicationLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-elevance-blue hover:text-elevance-blue-dark"
+                  className="text-brand-blue hover:text-brand-blue-dark"
                 >
                   <ExternalLink className="w-4 h-4" />
                 </a>
@@ -417,7 +417,7 @@ const EfficacyTab: React.FC<{ details: any; isPTCommittee: boolean }> = ({ detai
               {trial.nctId && (
                 <div>
                   <span className="text-gray-600">NCT ID:</span>
-                  <span className="ml-1 font-semibold text-elevance-blue">{trial.nctId}</span>
+                  <span className="ml-1 font-semibold text-brand-blue">{trial.nctId}</span>
                 </div>
               )}
             </div>
@@ -433,7 +433,7 @@ const EfficacyTab: React.FC<{ details: any; isPTCommittee: boolean }> = ({ detai
             </p>
 
             <div className="bg-white rounded p-3 mb-2">
-              <p className="text-sm font-semibold text-elevance-blue">{trial.result}</p>
+              <p className="text-sm font-semibold text-brand-blue">{trial.result}</p>
             </div>
 
             {trial.maceResults && (
@@ -565,7 +565,7 @@ const EvidenceTab: React.FC<{ details: any }> = ({ details }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-blue-50 rounded-lg p-4">
             <div className="text-sm text-gray-600 mb-1">Total Trials</div>
-            <div className="text-3xl font-bold text-elevance-blue">{evidence.totalTrials}</div>
+            <div className="text-3xl font-bold text-brand-blue">{evidence.totalTrials}</div>
             {evidence.trialSeries && (
               <div className="text-xs text-gray-500 mt-1">{evidence.trialSeries}</div>
             )}
@@ -692,7 +692,7 @@ const GuidelinesTab: React.FC<{ details: any }> = ({ details }) => (
             <h4 className="text-lg font-bold text-gray-900">{guideline.organization}</h4>
             <p className="text-xs text-gray-600">Published: {guideline.yearPublished}</p>
           </div>
-          <span className="px-3 py-1 bg-elevance-blue text-white rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-blue text-white rounded-full text-xs font-semibold">
             {guideline.evidenceLevel}
           </span>
         </div>
@@ -744,7 +744,7 @@ const ComparatorsTab: React.FC<{ details: any; chartData: any; isPTCommittee: bo
                     </td>
                   </>
                 )}
-                <td className="text-center p-3 font-semibold text-elevance-blue">{drug.efficacy}%</td>
+                <td className="text-center p-3 font-semibold text-brand-blue">{drug.efficacy}%</td>
                 <td className="text-center p-3 text-gray-700">${(drug.cost / 1000).toFixed(1)}K</td>
               </tr>
             ))}
@@ -788,7 +788,7 @@ const FormularyTab: React.FC<{ details: any }> = ({ details }) => {
           <h3 className="text-lg font-bold text-gray-900 mb-4">Medicare Part D Coverage (2024)</h3>
           <div className="bg-blue-50 rounded-lg p-5 border border-blue-200 mb-4">
             <div className="text-center mb-4">
-              <div className="text-4xl font-bold text-elevance-blue">{formulary.medicareCoverage.coveragePercent}%</div>
+              <div className="text-4xl font-bold text-brand-blue">{formulary.medicareCoverage.coveragePercent}%</div>
               <div className="text-sm text-gray-600">of Part D plans cover this drug</div>
             </div>
             <div>

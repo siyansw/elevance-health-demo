@@ -100,11 +100,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-3"
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-elevance-blue to-elevance-lightblue rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 bg-gradient-to-br from-brand-blue to-brand-lightblue rounded-lg flex items-center justify-center shadow-md">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-elevance-blue">Elevance Health</h1>
+                <h1 className="text-xl font-bold text-brand-blue">Clinical Intelligence</h1>
                 <p className="text-xs text-gray-600">Clinical Intelligence Platform</p>
               </div>
             </motion.div>
@@ -130,7 +130,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-6">
             Comprehensive formulary and prior authorization analysis powered by AI agents.
-            <span className="font-semibold text-elevance-blue"> All data ready to view below.</span>
+            <span className="font-semibold text-brand-blue"> All data ready to view below.</span>
           </p>
 
           {/* Use Case Selector */}
@@ -144,7 +144,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   onClick={() => setSelectedUseCase(useCase.id)}
                   className={`flex items-center space-x-3 px-6 py-4 rounded-xl transition-all ${
                     isSelected
-                      ? 'bg-elevance-blue text-white shadow-lg scale-105'
+                      ? 'bg-brand-blue text-white shadow-lg scale-105'
                       : 'bg-white text-gray-700 hover:bg-gray-50 shadow-md'
                   }`}
                 >
@@ -187,9 +187,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         transition={{ duration: 0.3 }}
                         className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-md"
                       >
-                        <Icon className="w-7 h-7 text-elevance-blue" />
+                        <Icon className="w-7 h-7 text-brand-blue" />
                       </motion.div>
-                      <span className="px-3 py-1 bg-white/60 backdrop-blur-sm rounded-full text-xs font-medium text-elevance-blue">
+                      <span className="px-3 py-1 bg-white/60 backdrop-blur-sm rounded-full text-xs font-medium text-brand-blue">
                         {useCase.category}
                       </span>
                     </div>
@@ -218,11 +218,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                           <div className="grid grid-cols-2 gap-3 text-xs">
                             <div className="bg-white/80 rounded px-3 py-2">
                               <div className="text-gray-600">Data Points</div>
-                              <div className="font-bold text-elevance-blue text-lg">{result.details?.dataPointsAnalyzed?.toLocaleString() || 'N/A'}</div>
+                              <div className="font-bold text-brand-blue text-lg">{result.details?.dataPointsAnalyzed?.toLocaleString() || 'N/A'}</div>
                             </div>
                             <div className="bg-white/80 rounded px-3 py-2">
                               <div className="text-gray-600">Sources Analyzed</div>
-                              <div className="font-bold text-elevance-blue text-lg">{result.details?.sourcesQueried || 'N/A'}</div>
+                              <div className="font-bold text-brand-blue text-lg">{result.details?.sourcesQueried || 'N/A'}</div>
                             </div>
                           </div>
                         </motion.div>
@@ -278,22 +278,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Platform Features</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-elevance-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="w-6 h-6 text-elevance-blue" />
+              <div className="w-12 h-12 bg-brand-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-6 h-6 text-brand-blue" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Real-Time Execution</h4>
               <p className="text-sm text-gray-600">Watch AI agents work in real-time with live streaming logs</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-elevance-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <ShieldCheck className="w-6 h-6 text-elevance-blue" />
+              <div className="w-12 h-12 bg-brand-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <ShieldCheck className="w-6 h-6 text-brand-blue" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Evidence-Based</h4>
               <p className="text-sm text-gray-600">Aggregates data from trusted medical and regulatory sources</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-elevance-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <Clock className="w-6 h-6 text-elevance-blue" />
+              <div className="w-12 h-12 bg-brand-lightblue/10 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Clock className="w-6 h-6 text-brand-blue" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2">Lightning Fast</h4>
               <p className="text-sm text-gray-600">Complete complex research tasks in under 60 seconds</p>

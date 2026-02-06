@@ -22,10 +22,10 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'bg-elevance-blue text-white hover:bg-elevance-blue-dark focus:ring-elevance-blue shadow-sm',
-    secondary: 'bg-elevance-lightblue text-white hover:bg-elevance-lightblue/90 focus:ring-elevance-lightblue shadow-sm',
-    outline: 'bg-white text-elevance-blue border-2 border-elevance-blue hover:bg-elevance-blue hover:text-white focus:ring-elevance-blue',
-    ghost: 'text-elevance-blue hover:bg-elevance-blue/10 focus:ring-elevance-blue',
+    primary: 'bg-brand-blue text-white hover:bg-brand-blue-dark focus:ring-brand-blue shadow-sm',
+    secondary: 'bg-brand-lightblue text-white hover:bg-brand-lightblue/90 focus:ring-brand-lightblue shadow-sm',
+    outline: 'bg-white text-brand-blue border-2 border-brand-blue hover:bg-brand-blue hover:text-white focus:ring-brand-blue',
+    ghost: 'text-brand-blue hover:bg-brand-blue/10 focus:ring-brand-blue',
   };
 
   const sizes = {

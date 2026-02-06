@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        elevance: {
+        brand: {
           blue: '#1A3673',
           lightblue: '#44b8f3',
           'blue-dark': '#0f2347',
