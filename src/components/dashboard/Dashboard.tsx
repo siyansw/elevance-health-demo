@@ -229,31 +229,29 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       )}
                     </div>
 
-                    {/* Footer */}
-                    <div className="pt-4 border-t border-white/50">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          {executingUseCase === useCase.id && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={handleWatchLive}
-                              icon={<Eye className="w-4 h-4" />}
-                            >
-                              Watch Live
-                            </Button>
-                          )}
-                        </div>
+                    {/* Run Agent Button */}
+                    <div className="pt-6 border-t border-white/50">
+                      <div className="flex items-center justify-center gap-4">
                         <Button
-                          variant="ghost"
-                          size="sm"
+                          variant="primary"
+                          size="lg"
                           onClick={() => handleExecuteUseCase(useCase.id)}
-                          icon={<Play className="w-3 h-3" />}
+                          icon={<Play className="w-5 h-5" />}
                           disabled={executingUseCase === useCase.id}
-                          className="text-xs"
+                          className="px-8 shadow-lg"
                         >
-                          {executingUseCase === useCase.id ? 'Refreshing...' : 'Refresh Data'}
+                          {executingUseCase === useCase.id ? 'Running Agent...' : 'Run Live Agent'}
                         </Button>
+                        {executingUseCase === useCase.id && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleWatchLive}
+                            icon={<Eye className="w-4 h-4" />}
+                          >
+                            Watch Live
+                          </Button>
+                        )}
                       </div>
                     </div>
 
