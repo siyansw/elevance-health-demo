@@ -13,11 +13,13 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.trim()) {
-      onLogin(password);
-    } else {
+    if (!password.trim()) {
       setError('Please enter a password');
+      return;
     }
+    onLogin(password);
+    // If still on this screen after onLogin, password was wrong
+    setTimeout(() => setError('Invalid access code'), 0);
   };
 
   return (
@@ -103,7 +105,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           className="mt-6 text-center"
         >
           <p className="text-white text-sm bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 inline-block">
-            Demo Environment - Use any password to access
+            Demo Environment - Enter access code to continue
           </p>
         </motion.div>
       </motion.div>

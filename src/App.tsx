@@ -9,8 +9,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = (password: string) => {
-    // Simple demo authentication - accept any password
-    if (password.trim()) {
+    if (password === 'demo2026') {
       setIsAuthenticated(true);
       setCurrentView('dashboard');
     }
