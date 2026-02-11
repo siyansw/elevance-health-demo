@@ -1,6 +1,6 @@
 import type { ExecutionResult, AgentLog } from './types';
 
-const MINO_API_URL = import.meta.env.VITE_MINO_API_URL || 'https://mino.ai/v1/automation/run-sse';
+const MINO_API_URL = import.meta.env.VITE_MINO_API_URL || 'https://agent.tinyfish.ai/v1/automation/run-sse';
 const MINO_API_KEY = import.meta.env.VITE_MINO_API_KEY || '';
 
 interface MinoRequest {
